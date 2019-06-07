@@ -1,5 +1,7 @@
 from sage.misc.abstract_method import abstract_method
 from sage.misc.sage_typing import semantic, Facade, Family, Self
+from sage.categories.category import Category
+import sage.categories.sets_cat
 
 @semantic(mmt="Semigroup", variant="multiplicative", gap="IsAssociative")
 class Semigroups:
@@ -82,3 +84,13 @@ class Semigroups:
                 @abstract_method
                 def isomorphism_transformation_monoid(self):
                     pass
+
+    @semantic(gap="IsGreensClass")
+    class GreensClass(Category):
+        def super_categories(self):
+            return [sage.categories.sets_cat.Sets()]
+
+        class ParentMethods:
+            @semantic(gap="SchutzenbergerGroup")
+            def schutzenberger_group(self):
+                pass

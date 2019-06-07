@@ -1,6 +1,7 @@
 from sage.misc.abstract_method import abstract_method
 from sage.misc.sage_typing import semantic, Family, Sage, Self
 
+@semantic(mmt="Group", variant="multiplicative")
 class Groups:
 
     class ParentMethods:
