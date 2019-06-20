@@ -6,6 +6,7 @@ class AdditiveSemigroups:
     # Near Additive Magmas don't require commutativity
     # See http://www.gap-system.org/Manuals/doc/ref/chap55.html
 
+    # Note: Additive Magmas are always assumed to be associative and commutative in GAP
     @semantic(gap="IsAdditiveMagma")
     class AdditiveCommutative:
         pass
