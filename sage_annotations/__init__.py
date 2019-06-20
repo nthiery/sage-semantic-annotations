@@ -35,6 +35,7 @@ import logging
 from recursive_monkey_patch import monkey_patch
 
 log_level=logging.ERROR
+#log_level=logging.INFO
 
 import sage_annotations.misc
 import sage.misc
