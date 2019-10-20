@@ -6,7 +6,7 @@ Semantic annotations for the SageMath library
 import os
 import sys
 # Always prefer setuptools over distutils
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 # To use a consistent encoding
 from codecs import open
@@ -41,7 +41,7 @@ setup(
         #'Programming Language :: Python :: 3',
     ],
     keywords='SageMath',
-    packages=['sage_annotations'],
+    packages=find_packages(),
     install_requires=['recursive-monkey-patch'], # 'Sage'
     cmdclass = {'test': SageTest},
 )
