@@ -1,3 +1,7 @@
+from sage.misc.abstract_method import abstract_method
+from sage.misc.sage_typing import semantic, Facade, Any
+
+@semantic()
 class FiniteGroups:
 
     class ParentMethods:
@@ -32,3 +36,13 @@ class FiniteGroups:
                 return super(Groups().Finite().parent_class, self).cardinality()
             else:
                 return o()
+
+        @semantic(gap="CharacterTable")
+        @abstract_method
+        def character_table(self):
+            """Return the character table of self"""
+
+        @semantic(gap="IrreducibleRepresentations", codomain=Facade[Any])
+        @abstract_method
+        def irreducible_representations(self, F):
+            """Return the irreducible representations of self"""

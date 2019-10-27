@@ -2,6 +2,7 @@ from sage.misc.abstract_method import abstract_method
 from sage.misc.sage_typing import semantic, Facade, Family, Self
 from sage.categories.category import Category
 import sage.categories.sets_cat
+import sage.categories.semigroups
 
 @semantic(mmt="Semigroup", variant="multiplicative", gap="IsAssociative")
 class Semigroups:
@@ -11,7 +12,7 @@ class Semigroups:
         def semigroup_generators(self):
             pass
 
-        @semantic(gap="\/")
+        @semantic(gap=r"\/")
         @abstract_method
         def __truediv__(self, relations):
             pass
@@ -34,10 +35,19 @@ class Semigroups:
     @semantic()
     class Finite:
         class ParentMethods:
-            @semantic(gap="GreensJClasses", codomain=Facade[Facade[Self]])
+
+            # @semantic(gap="MultiplicationTable",
+            #           hightlight=lambda self: self.cardinality() < 27,
+            #           label=""
+            #          )
+            # @abstract_method
+            # def multiplication_table(self):
+            #     pass
+
+            @semantic(gap="GroupOfUnits")
             @abstract_method
-            def j_classes(self):
-                pass
+            def group_of_units(self):
+                """Return the group of units of this semigroup"""
 
             @semantic(gap="GreensLClasses", codomain=Facade[Facade[Self]])
             @abstract_method
@@ -47,6 +57,11 @@ class Semigroups:
             @semantic(gap="GreensRClasses", codomain=Facade[Facade[Self]])
             @abstract_method
             def r_classes(self):
+                pass
+
+            @semantic(gap="GreensJClasses", codomain=Facade[Facade[Self]])
+            @abstract_method
+            def j_classes(self):
                 pass
 
             @semantic(gap="GreensDClasses", codomain=Facade[Facade[Self]])
@@ -76,6 +91,15 @@ class Semigroups:
             @abstract_method
             def monoid_generators(self):
                 pass
+
+            def cayley_graph(self, side="right", simple=False, elements = None, generators = None, connecting_set = None):
+                if generators is None:
+                    try:
+                        generators = self.monoid_generators()
+                    except NotImplementedError:
+                        generators = self.semigroup_generators()
+                return sage.categories.semigroups.Semigroups().Finite().parent_class.cayley_graph(self, side=side, simple=simple, elements=elements, generators=generators, connecting_set=connecting_set)
+
 
         @semantic()
         class Finite:

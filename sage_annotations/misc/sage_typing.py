@@ -19,7 +19,7 @@ import itertools
 
 import inspect
 import typing
-from typing import Any, Iterator, List, Set, Container
+from typing import Any, Iterator, List, Set, _GenericAlias
 
 # We only import List, Set to be able to reimport from here
 # This prevents pyflakes from complaining
@@ -41,22 +41,22 @@ def specialize(type, value):
         return type
 
 def GenericMeta_specialize(self, value):
-    if self.__origin__ is None:
-        return self
-    return self.__origin__[specialize(self.__args__[0], value)]
-typing.GenericMeta.specialize = GenericMeta_specialize
+    return self.copy_with(tuple(specialize(a, value) for a in self.__args__))
+_GenericAlias.specialize = GenericMeta_specialize
 
-class Family(typing.Sequence[typing.T]):
-    __slots__ = ()
-    __extra__ = sage.sets.family.TrivialFamily
+Family = _GenericAlias(sage.sets.family.TrivialFamily, typing.T)
+class _Facade:
+    pass
+Facade = _GenericAlias(_Facade, typing.T)
 
 Sage         = attrcall("sage")
 
 # Class for dependent types constructed from a callable value -> type
 # 
-class DependentType(typing._TypingBase): # Singleton
-    __metaclass__ = typing.TypingMeta
+class DependentType:#(typing._TypingBase): # Singleton
+    #__metaclass__ = typing.TypingMeta
     __slots__ = ("name", "specialize")
+    # Should be callable?
     def __init__(self, specialize, name):
         self.name = name
         self.specialize = specialize
@@ -64,13 +64,12 @@ class DependentType(typing._TypingBase): # Singleton
         raise TypeError("Unspecialized {} cannot be used with isinstance()".format(self))
     def __repr__(self):
         return self.name
+    def __call__(self, o):
+        pass
 
 Self         = DependentType(lambda x: x,            name="Self")
 FacadeFor    = DependentType(attrcall("facade_for"), name="FacadeFor")
 ParentOfSelf = DependentType(attrcall("parent"    ), name="ParentOfSelf")
-
-class Facade(typing.Sequence[typing.T]):
-    pass
 
 class WrapMethod:
     """
@@ -79,12 +78,16 @@ class WrapMethod:
 
     EXAMPLES::
 
-        sage: from mmt import MMTWrapMethod
+        sage: from sage.misc.sage_typing import WrapMethod
         sage: def zero(self):
         ....:     pass
-        sage: f = WrapMethod(zero, "0", gap_name="Zero")
-        sage: c = f.generate_code("NeutralElement")
-        sage: c
+        sage: f = WrapMethod(zero, gap_name="Zero")
+        sage: f.semantic
+        {'argspec': ArgSpec(args=['self'], varargs=None, keywords=None, defaults=None),
+        'arity': 1,
+        'gap_name': 'Zero'}
+        sage: c = f.generate_code("NeutralElement") # not tested
+        sage: c                                     # not tested
         <function zero at ...>
     """
     def __init__(self, f, **options):
@@ -137,11 +140,11 @@ def harvest_class(cls, **options):
             continue
         nested_class_semantic = {}
         for (key, method) in source.__dict__.items():
-            if key in {'__module__', '__doc__'}:
+            if key in {'__module__', '__doc__','__dict__', '__weakref__'}:
                 continue
-            assert isinstance(method, WrapMethod)
-            nested_class_semantic[key] = method.semantic
-            setattr(source, key, method.__imfunc__)
+            if isinstance(method, WrapMethod):
+                nested_class_semantic[key] = method.semantic
+                setattr(source, key, method.__imfunc__)
         source._semantic = nested_class_semantic
 
 def semantic(**options):

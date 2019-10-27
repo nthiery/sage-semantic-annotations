@@ -16,7 +16,7 @@ class Groups:
         def group_generators(self):
             pass
 
-        @semantic(gap="\/")
+        @semantic(gap=r"\/")
         @abstract_method
         def __truediv__(self, relators):
             pass
