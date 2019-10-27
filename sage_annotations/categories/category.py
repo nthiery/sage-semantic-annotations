@@ -24,3 +24,6 @@ class Category:
             # Could warn if some entry is redefined; this should not happen, right?
             semantic[name].update(getattr(cls, "_semantic", {}))
         return semantic
+
+    def _latex_(self):
+        return r"\mathbf{\text{%s}}"%(self._repr_object_names())
