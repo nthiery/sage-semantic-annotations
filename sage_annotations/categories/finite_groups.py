@@ -1,5 +1,5 @@
 from sage.misc.abstract_method import abstract_method
-from sage.misc.sage_typing import semantic, Facade, Any
+from sage.misc.sage_typing import semantic, Facade, Any, Self
 
 @semantic()
 class FiniteGroups:
@@ -46,3 +46,8 @@ class FiniteGroups:
         @abstract_method
         def irreducible_representations(self, F):
             """Return the irreducible representations of self"""
+
+        @semantic(gap="ConjugacyClasses", codomain=Facade[Facade[Self]])
+        @abstract_method
+        def conjugacy_classes(self, F):
+            """Return the conjugacy classes of self"""
