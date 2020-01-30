@@ -21,3 +21,8 @@ class Modules:
                 @abstract_method
                 def basis_disabled(self):
                     pass
+
+                @semantic(gap="LeftActingDomain")
+                @abstract_method
+                def base_ring(self):
+                    pass
