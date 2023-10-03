@@ -19,7 +19,7 @@ import itertools
 
 import inspect
 import typing
-from typing import Any, Iterator, List, Set, _GenericAlias
+from typing import Any, Iterator, List, Tuple, Set, _GenericAlias
 
 # We only import List, Set to be able to reimport from here
 # This prevents pyflakes from complaining
