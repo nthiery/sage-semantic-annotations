@@ -26,7 +26,7 @@ from typing import Any, Iterator, List, Set, _GenericAlias
 Any, List, Set, Iterator
 
 from sage.misc.abstract_method import AbstractMethod
-from sage.misc.misc import attrcall
+from sage.misc.call import attrcall
 from sage.categories.category import Category
 from sage.libs.gap.libgap import libgap
 import sage.sets.family
